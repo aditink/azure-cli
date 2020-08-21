@@ -35,7 +35,7 @@ class AzureReservationsTests(ScenarioTest):
 
     def test_get_applied_reservation_order_ids(self):
         self.kwargs.update({
-            'subscription': '00000000-0000-0000-0000-000000000000'
+            'subscription': 'a6cca743-ee25-481c-8626-e5362d7bf0b9'
         })
         result = self.cmd('reservations reservation-order-id list --subscription-id {subscription}') \
             .get_output_in_json()
@@ -54,7 +54,7 @@ class AzureReservationsTests(ScenarioTest):
 
     def test_get_reservation_order(self):
         self.kwargs.update({
-            'reservation_order_id': '0a47417c-cd30-4f67-add6-d631583e09f3'
+            'reservation_order_id': '8f962b1d-b9f6-4b4a-9732-e1b3ceadc391'
         })
         command = 'reservations reservation-order show --reservation-order-id {reservation_order_id}'
         reservation_order = self.cmd(command).get_output_in_json()
@@ -64,7 +64,7 @@ class AzureReservationsTests(ScenarioTest):
 
     def test_list_reservation(self):
         self.kwargs.update({
-            'reservation_order_id': '0a47417c-cd30-4f67-add6-d631583e09f3'
+            'reservation_order_id': '8f962b1d-b9f6-4b4a-9732-e1b3ceadc391'
         })
         reservation_list = self.cmd('reservations reservation list --reservation-order-id {reservation_order_id}') \
             .get_output_in_json()
@@ -76,8 +76,8 @@ class AzureReservationsTests(ScenarioTest):
 
     def test_get_reservation(self):
         self.kwargs.update({
-            'reservation_order_id': '0a47417c-cd30-4f67-add6-d631583e09f3',
-            'reservation_id': 'ae1fbdad-6333-4964-9f4c-83f7e2b7f44f'
+            'reservation_order_id': '8f962b1d-b9f6-4b4a-9732-e1b3ceadc391',
+            'reservation_id': '343cdc00-d1bf-45aa-8512-2c576601c49a'
         })
         reservation = self.cmd('reservations reservation show  --reservation-order-id {reservation_order_id} '
                                '--reservation-id {reservation_id}').get_output_in_json()
@@ -88,8 +88,8 @@ class AzureReservationsTests(ScenarioTest):
 
     def test_list_reservation_history(self):
         self.kwargs.update({
-            'reservation_order_id': '0a47417c-cd30-4f67-add6-d631583e09f3',
-            'reservation_id': 'ae1fbdad-6333-4964-9f4c-83f7e2b7f44f'
+            'reservation_order_id': '8f962b1d-b9f6-4b4a-9732-e1b3ceadc391',
+            'reservation_id': '343cdc00-d1bf-45aa-8512-2c576601c49a'
         })
         history = self.cmd('reservations reservation list-history --reservation-order-id {reservation_order_id}'
                            ' --reservation-id {reservation_id}').get_output_in_json()
@@ -101,10 +101,11 @@ class AzureReservationsTests(ScenarioTest):
 
     def test_get_catalog(self):
         self.kwargs.update({
-            'subscription': '00000000-0000-0000-0000-000000000000',
-            'type': 'VirtualMachines',
-            'location': 'westus'
+            'subscription': 'a6cca743-ee25-481c-8626-e5362d7bf0b9',
+            'type': 'AppService',
+            'location': 'westus2'
         })
+        # TODO throw CLI Error.
         catalog = self.cmd(
             'reservations catalog show --subscription-id {subscription} --reserved-resource-type {type} --location {location}').get_output_in_json()
         self.assertGreater(len(catalog), 0)
@@ -116,10 +117,10 @@ class AzureReservationsTests(ScenarioTest):
 
     def test_update_reservation(self):
         self.kwargs.update({
-            'reservation_order_id': 'fe1341ea-4820-4ac9-9352-4136a6d8a252',
-            'reservation_id': '8e5963e2-000b-45bd-a1b4-305c9e5f89c9',
-            'scope': '/subscriptions/d3ae48e5-dbb2-4618-afd4-fb1b8559cb80',
-            'instance_flexibility': 'Off'
+            'reservation_order_id': '8f962b1d-b9f6-4b4a-9732-e1b3ceadc391',
+            'reservation_id': '343cdc00-d1bf-45aa-8512-2c576601c49a',
+            'scope': '/subscriptions/a6cca743-ee25-481c-8626-e5362d7bf0b9',
+            'instance_flexibility': 'On'
         })
 
         single_reservation = self.cmd('reservations reservation update --reservation-order-id {reservation_order_id}'
@@ -134,10 +135,10 @@ class AzureReservationsTests(ScenarioTest):
 
     def test_split_and_merge(self):
         self.kwargs.update({
-            'reservation_order_id': '0af601f3-7868-44ee-b833-4d2e64ad3d70',
-            'reservation_id': '6dee7663-3e63-4115-aa4d-41e9a57f551e',
+            'reservation_order_id': '1209c113-0201-43fc-93d5-9ed1eeecefbe',
+            'reservation_id': 'dc7e4968-79b8-445e-8f83-9a1268a8aba1',
             'quantity1': 1,
-            'quantity2': 2
+            'quantity2': 3
         })
 
         original_reservation = self.cmd('reservations reservation show  --reservation-order-id {reservation_order_id}'
@@ -173,7 +174,7 @@ class AzureReservationsTests(ScenarioTest):
 
     def test_calculate_reservation_order(self):
         self.kwargs.update({
-            'subid': 'd3ae48e5-dbb2-4618-afd4-fb1b8559cb80',
+            'subid': 'a6cca743-ee25-481c-8626-e5362d7bf0b9',
             'sku': 'standard_b1ls',
             'location': 'westus',
             'reservedResourceType': 'VirtualMachines',
@@ -194,16 +195,16 @@ class AzureReservationsTests(ScenarioTest):
 
     def test_purchase_reservation_order(self):
         self.kwargs.update({
-            'roid': 'd4ef7ec2-941c-4da7-8ec9-2f148255a0dc',
-            'subid': 'd3ae48e5-dbb2-4618-afd4-fb1b8559cb80',
+            'roid': 'f7a08850-666d-4d2a-b531-c5ce9ece2212',
+            'subid': 'a6cca743-ee25-481c-8626-e5362d7bf0b9',
             'sku': 'standard_b1ls',
-            'location': 'westus',
+            'location': 'westeurope',
             'reservedResourceType': 'VirtualMachines',
-            'term': 'P1Y',
-            'quantity': '2',
-            'displayName': 'test',
+            'term': 'P3Y',
+            'quantity': '1',
+            'displayName': '877194f4-a43d-4e92-9782-69fd59faa8d8',
             'appliedScopes': 'Shared',
-            'instanceFlexibility': 'Off',
+            'instanceFlexibility': 'On',
             'billingPlan': 'Monthly',
             'appliedScopeType': 'Shared'
         })
